@@ -13,6 +13,7 @@ function loaddata() {
                 element = element + p[0]["titel"] + " | Ort: " + p[0]["ort"] + " | Datum: " + p[0]["datum"] + " | Ablaufdatum: " + p[0]["ablaufdatum"] + "</li>";
                 $("#content").append(element);
             })
+            $("#content").append("<li class=\"list-group-item\" onclick=\"openCreateNewAppointment()\">Neuen Termin erstellen</li>");
         },
         error: function(){
             console.log("Error");
@@ -88,4 +89,18 @@ function book(timeID){
             console.log("Error");
         }     
     });
+}
+
+function openCreateNewAppointment(){
+    $("#content").slideUp(500, function(){
+        $("#content").empty();
+        $("#content").append("<li class=\"list-group-item\" onclick=\"loaddata()\" style=\"background-color:grey\">Back</li>");
+        $("#content").append("<li class=\"list-group-item\">Neuen Termin erstellen</li>");
+        $("#content").append("<li class=\"list-group-item\">Name <input id=\"name\" type=\"text\"></li>");
+        $("#content").append("<li class=\"list-group-item\">Ort <input id=\"ort\" type=\"text\"></li>");
+        $("#content").append("<li class=\"list-group-item\">Datum <input  id=\"Datum\" type=\"text\"></li>");
+        $("#content").append("<li class=\"list-group-item\">Ablaufdatum <input  id=\"Ablaufdatum\" type=\"text\"></li>");
+        $("#content").append("<li class=\"list-group-item\"><input type=\"button\" value=\"Erstellen\"></li>");
+        $("#content").slideDown(500);
+    })
 }
