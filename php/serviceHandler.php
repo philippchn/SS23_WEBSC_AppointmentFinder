@@ -34,3 +34,23 @@ if($method == "book"){
     $response = array("status" => "Success");
     echo (json_encode($response));
 }
+
+if($method == "addAppointmentToDb"){
+    $titel = $_POST["titel"];
+    $ort = $_POST["ort"];
+    $datum = $_POST["datum"];
+    $ablaufdatum = $_POST["ablaufdatum"];
+    $dh->addAppointmentToDb($titel, $ort, $datum, $ablaufdatum);
+    http_response_code(200);
+    $response = array("status" => "Success");
+    echo (json_encode($response));
+}
+
+
+if($method == "addTimeslotToDb"){
+    $zeit = $_POST["zeit"];
+    $dh->addTimeslotToDb($zeit);
+    http_response_code(200);
+    $response = array("status" => "Success");
+    echo (json_encode($response));
+}

@@ -19,6 +19,32 @@ class DataHandler
         $sql = "UPDATE `timeslots` SET `status` = '1', `vorname` = '" . $vorname . "', `nachname` = '" . $nachname . "', `kommentar` = '" . $kommentar . "' WHERE `timeslots`.`time_id` = " . $id;
         $db_obj->query($sql);
     }
+
+    public function addAppointmentToDb($titel, $ort, $datum, $ablaufdatum){
+        require_once ('../db/dbaccess.php');
+        $db_obj = new mysqli($host, $user, $password, $database);
+
+         //wenn alle Formulare der buchung ausgefüllt wurden...
+            $sql = "INSERT INTO appointment(titel,ort,datum,ablaufdatum) VALUES(?,?,?,?)";  //werden diese zum einfügen vorberreitet
+            $stmt = $db_obj->prepare($sql);
+            $stmt->bind_param('ssss', $titel, $ort, $datum, $ablaufdatum);
+            $stmt->execute();
+            $db_obj->query($sql);
+
+    }
+
+    public function addTimeslotToDb($zeit){
+        $id = "2";
+        require_once ('../db/dbaccess.php');
+        $db_obj = new mysqli($host, $user, $password, $database);
+        $sql = "INSERT INTO timeslots(fk_appointment_id, zeit) VALUES(?,?)"; 
+        $stmt = $db_obj->prepare($sql);
+        $stmt->bind_param('ss', $id, $zeit);
+        $stmt->execute();
+        $db_obj->query($sql);
+    }
+
+    
     private static function getDemoData()
     {
         $demodata = [
