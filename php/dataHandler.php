@@ -5,59 +5,6 @@ class DataHandler
 {
     public function queryAppointments()
     {
-        $res =  $this->getAllAppointmentsfromDB();
-        return $res;
-    }
-    public function queryTimes($id)
-    {
-        $res =  $this->getTimesOfAppointmentfromDB($id);
-        return $res;
-    }
-    public function book($id, $vorname, $nachname, $kommentar){
-        require_once ('../db/dbaccess.php');
-        $db_obj = new mysqli($host, $user, $password, $database);
-        $sql = "UPDATE `timeslots` SET `status` = '1', `vorname` = '" . $vorname . "', `nachname` = '" . $nachname . "', `kommentar` = '" . $kommentar . "' WHERE `timeslots`.`time_id` = " . $id;
-        $db_obj->query($sql);
-    }
-
-    public function addAppointmentToDb($titel, $ort, $datum, $ablaufdatum){
-        require_once ('../db/dbaccess.php');
-        $db_obj = new mysqli($host, $user, $password, $database);
-
-         //wenn alle Formulare der buchung ausgefüllt wurden...
-            $sql = "INSERT INTO appointment(titel,ort,datum,ablaufdatum) VALUES(?,?,?,?)";  //werden diese zum einfügen vorberreitet
-            $stmt = $db_obj->prepare($sql);
-            $stmt->bind_param('ssss', $titel, $ort, $datum, $ablaufdatum);
-            $stmt->execute();
-            $db_obj->query($sql);
-
-    }
-
-    public function addTimeslotToDb($zeit){
-        $id = "2";
-        require_once ('../db/dbaccess.php');
-        $db_obj = new mysqli($host, $user, $password, $database);
-        $sql = "INSERT INTO timeslots(fk_appointment_id, zeit) VALUES(?,?)"; 
-        $stmt = $db_obj->prepare($sql);
-        $stmt->bind_param('ss', $id, $zeit);
-        $stmt->execute();
-        $db_obj->query($sql);
-    }
-
-    
-    private static function getDemoData()
-    {
-        $demodata = [
-            [new appointment(1, "Meeting 1", "Ort 1", "2023.12.20", "2023.11.20")],
-            [new appointment(2, "Meeting 2", "Ort 2", "2023.12.21", "2023.11.21")],
-            [new appointment(3, "Meeting 3", "Ort 3", "2023.12.22", "2023.11.22")],
-            [new appointment(4, "Meeting 4", "Ort 4", "2023.12.23", "2023.11.23")],
-            [new appointment(5, "Meeting 5", "Ort 5", "2023.12.24", "2023.11.24")],
-        ];
-        return $demodata;
-    }
-    private static function getAllAppointmentsfromDB()
-    {
         require_once ('../db/dbaccess.php');
         $db_obj = new mysqli($host, $user, $password, $database);
         $sql = "SELECT * FROM appointment";
@@ -75,7 +22,8 @@ class DataHandler
         }
         return $data;
     }
-    private static function getTimesOfAppointmentfromDB($id){
+    public function queryTimes($id)
+    {
         $data = [];
         require_once ('../db/dbaccess.php');
         
@@ -94,5 +42,42 @@ class DataHandler
             $data[] = [$time];
         }
         return $data;
+    }
+    public function book($id, $vorname, $nachname, $kommentar){
+        require_once ('../db/dbaccess.php');
+        $db_obj = new mysqli($host, $user, $password, $database);
+        $sql = "UPDATE `timeslots` SET `status` = '1', `vorname` = '" . $vorname . "', `nachname` = '" . $nachname . "', `kommentar` = '" . $kommentar . "' WHERE `timeslots`.`time_id` = " . $id;
+        $db_obj->query($sql);
+        return;
+    }
+
+    public function addAppointmentToDb($titel, $ort, $datum, $ablaufdatum){
+        require_once ('../db/dbaccess.php');
+        $db_obj = new mysqli($host, $user, $password, $database);
+        $sql = "INSERT INTO appointment(titel,ort,datum,ablaufdatum) VALUES(?,?,?,?)";
+        $stmt = $db_obj->prepare($sql);
+        $stmt->bind_param('ssss', $titel, $ort, $datum, $ablaufdatum);
+        $stmt->execute();
+        return;
+    }
+
+    public function addTimeslotToDb($zeit, $ts_id){
+        require_once ('../db/dbaccess.php');
+        $db_obj = new mysqli($host, $user, $password, $database);
+        $sql = "INSERT INTO timeslots(fk_appointment_id, zeit) VALUES(?,?)"; 
+        $stmt = $db_obj->prepare($sql);
+        $stmt->bind_param('ss', $ts_id, $zeit);
+        $stmt->execute();
+        return;
+    }
+
+    public function deleteAppointment($app_id){
+        require_once ('../db/dbaccess.php');
+        $db_obj = new mysqli($host, $user, $password, $database);
+        $sql = "DELETE FROM timeslots WHERE fk_appointment_id = " . $app_id;
+        $db_obj->query($sql);
+        $sql = "DELETE FROM appointment WHERE appointment_id = " . $app_id;
+        $db_obj->query($sql);
+        return;
     }
 }

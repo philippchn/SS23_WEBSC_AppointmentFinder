@@ -9,7 +9,7 @@ if(isset($_GET["method"])){
 if(isset($_POST["method"])){
     $method = $_POST["method"];
 }
-
+// Using the Class Datahandler we can communicate with the database
 $dh = new DataHandler();
 
 if($method == "queryAppointments"){
@@ -49,7 +49,16 @@ if($method == "addAppointmentToDb"){
 
 if($method == "addTimeslotToDb"){
     $zeit = $_POST["zeit"];
-    $dh->addTimeslotToDb($zeit);
+    $ts_id = $_POST["ts_id"];
+    $dh->addTimeslotToDb($zeit, $ts_id);
+    http_response_code(200);
+    $response = array("status" => "Success");
+    echo (json_encode($response));
+}
+
+if($method == "deleteAppointment"){
+    $app_id = $_POST["id"];
+    $dh->deleteAppointment($app_id);
     http_response_code(200);
     $response = array("status" => "Success");
     echo (json_encode($response));
